@@ -3,18 +3,20 @@ import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import HomePage from "./pages/HomePage";
 import BatchesPage from "./pages/BatchesPage";
+import { Box, Toolbar } from "@mui/material";
 
 const App = () => {
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <Box sx={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: "20px" }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {/* <Toolbar />  */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/batches" element={<BatchesPage />} />
         </Routes>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

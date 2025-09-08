@@ -144,7 +144,7 @@ const BatchesPage = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <h1>Batches</h1>
 
       {/* Search Bar */}
