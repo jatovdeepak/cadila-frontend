@@ -92,7 +92,7 @@ const BatchesPage = () => {
       valA = new Date(a.createdAt);
       valB = new Date(b.createdAt);
     }
-    return order === "asc" ? valA > valB ? 1 : -1 : valA < valB ? 1 : -1;
+    return order === "asc" ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
   });
 
   // filter by search
@@ -172,7 +172,9 @@ const BatchesPage = () => {
                   File Name
                 </TableSortLabel>
               </TableCell>
-              <TableCell sortDirection={orderBy === "createdAt" ? order : false}>
+              <TableCell
+                sortDirection={orderBy === "createdAt" ? order : false}
+              >
                 <TableSortLabel
                   active={orderBy === "createdAt"}
                   direction={orderBy === "createdAt" ? order : "asc"}
@@ -200,10 +202,18 @@ const BatchesPage = () => {
                       {new Date(doc.createdAt).toLocaleString()}
                     </TableCell>
                     <TableCell>
-                      {details ? cleaned["PRODUCT NAME"] || "N/A" : <em>Loading...</em>}
+                      {details ? (
+                        cleaned["PRODUCT NAME"] || "N/A"
+                      ) : (
+                        <em>Loading...</em>
+                      )}
                     </TableCell>
                     <TableCell>
-                      {details ? cleaned["DOCUMENT"] || "N/A" : <em>Loading...</em>}
+                      {details ? (
+                        cleaned["DOCUMENT NAME"] || "N/A"
+                      ) : (
+                        <em>Loading...</em>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Button
@@ -248,7 +258,9 @@ const BatchesPage = () => {
                       border: "1px solid #ccc",
                     }}
                   >
-                    <Worker>
+                    <Worker
+                      workerUrl={`//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`}
+                    >
                       <Viewer
                         fileUrl={pdfUrl}
                         plugins={[defaultLayoutPluginInstance]}
