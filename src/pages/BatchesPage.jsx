@@ -37,8 +37,6 @@ const BatchesPage = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "http://localhost:5000"; 
-
   // selection state
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -51,7 +49,7 @@ const BatchesPage = () => {
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  // 🔸 Fetch PQR List from localStorage (shared with PQRList.jsx)
+  // PQR List
   const [pqrList, setPqrList] = useState(() => {
     const stored = localStorage.getItem("pqrList");
     return stored ? JSON.parse(stored) : [];
@@ -61,40 +59,41 @@ const BatchesPage = () => {
     localStorage.setItem("pqrList", JSON.stringify(pqrList));
   }, [pqrList]);
 
-  // fetch docs + preload details
+  // 🟦 Fetch Documents
+  const fetchDocs = async () => {
+    try {
+      const res = await fetch(`${API_URL}/documents`);
+      const data = await res.json();
+      setDocs(data);
+
+      // preload details
+      const detailsPromises = data.map(async (doc) => {
+        try {
+          const res = await fetch(`${API_URL}/documents/${doc.id}`);
+          const details = await res.json();
+          return { id: doc.id, details };
+        } catch (err) {
+          console.error(`Error fetching details for ${doc.id}:`, err);
+          return null;
+        }
+      });
+
+      const detailsArr = await Promise.all(detailsPromises);
+      const detailsMap = {};
+      detailsArr.forEach((entry) => {
+        if (entry) detailsMap[entry.id] = entry.details;
+      });
+      setDetailsCache(detailsMap);
+    } catch (err) {
+      console.error("Error fetching documents:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchDocs = async () => {
-      try {
-        const res = await fetch(`${API_URL}/documents`);
-        const data = await res.json();
-        setDocs(data);
-
-        // preload details for each
-        const detailsPromises = data.map(async (doc) => {
-          try {
-            const res = await fetch(`${API_URL}/documents/${doc.id}`);
-            const details = await res.json();
-            return { id: doc.id, details };
-          } catch (err) {
-            console.error(`Error fetching details for ${doc.id}:`, err);
-            return null;
-          }
-        });
-
-        const detailsArr = await Promise.all(detailsPromises);
-        const detailsMap = {};
-        detailsArr.forEach((entry) => {
-          if (entry) detailsMap[entry.id] = entry.details;
-        });
-        setDetailsCache(detailsMap);
-      } catch (err) {
-        console.error("Error fetching documents:", err);
-      }
-    };
     fetchDocs();
   }, []);
 
-  // sorting
+  // 🟧 Sorting
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -113,7 +112,7 @@ const BatchesPage = () => {
     return order === "asc" ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
   });
 
-  // filter by search
+  // 🟨 Search
   const filteredDocs = sortedDocs.filter((doc) => {
     const details = detailsCache[doc.id];
     const cleaned = details?.cleanedJson?.[0] || {};
@@ -126,14 +125,7 @@ const BatchesPage = () => {
     );
   });
 
-  // pagination
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  // selection handlers
+  // 🟥 Selection
   const handleSelectAll = (event) => {
     if (event.target.checked) {
       const allIds = filteredDocs.map((doc) => doc.id);
@@ -151,10 +143,9 @@ const BatchesPage = () => {
 
   const isSelected = (id) => selectedRows.includes(id);
 
-  // 🔸 Generate PQR entries and save to localStorage
+  // 🟩 Generate PQR
   const handleGeneratePQR = async () => {
     if (selectedRows.length === 0) return;
-  
     try {
       const res = await fetch(`${API_URL}/pqrs`, {
         method: "POST",
@@ -162,11 +153,11 @@ const BatchesPage = () => {
         body: JSON.stringify({ selectedDocIds: selectedRows }),
       });
       const data = await res.json();
-  
+
       if (res.ok) {
         alert(`${data.pqr.name} created successfully!`);
         setSelectedRows([]);
-        setPqrList((prev) => [...prev, data.pqr.name]); // update local storage list
+        setPqrList((prev) => [...prev, data.pqr.name]);
       } else {
         alert(`Error: ${data.error}`);
       }
@@ -175,9 +166,8 @@ const BatchesPage = () => {
       alert("Error creating PQR");
     }
   };
-  
 
-  // view dialog
+  // 🟦 View Document
   const handleView = async (doc) => {
     setSelectedDoc(doc);
     setOpen(true);
@@ -205,18 +195,37 @@ const BatchesPage = () => {
     setPdfUrl(null);
   };
 
+  // 🗑️ Delete Document
+  const handleDelete = async (docId) => {
+    if (!window.confirm("Are you sure you want to delete this document?")) return;
+
+    try {
+      const res = await fetch(`${API_URL}/documents/${docId}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        alert("Document deleted successfully");
+        setDocs((prev) => prev.filter((d) => d.id !== docId));
+        const updatedCache = { ...detailsCache };
+        delete updatedCache[docId];
+        setDetailsCache(updatedCache);
+      } else {
+        const err = await res.json();
+        alert(`Failed to delete: ${err.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Error deleting document");
+    }
+  };
+
   return (
     <div>
       <h1>Batches</h1>
 
-      {/* Toolbar with search + button */}
-      <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "0 0 16px 0",
-        }}
-      >
+      {/* Toolbar */}
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between", paddingBottom: "16px" }}>
         <TextField
           label="Search"
           variant="outlined"
@@ -225,7 +234,6 @@ const BatchesPage = () => {
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, marginRight: "16px" }}
         />
-
         <Button
           variant="contained"
           color="primary"
@@ -244,18 +252,12 @@ const BatchesPage = () => {
               <TableCell padding="checkbox">
                 <Checkbox
                   color="primary"
-                  indeterminate={
-                    selectedRows.length > 0 &&
-                    selectedRows.length < filteredDocs.length
-                  }
-                  checked={
-                    filteredDocs.length > 0 &&
-                    selectedRows.length === filteredDocs.length
-                  }
+                  indeterminate={selectedRows.length > 0 && selectedRows.length < filteredDocs.length}
+                  checked={filteredDocs.length > 0 && selectedRows.length === filteredDocs.length}
                   onChange={handleSelectAll}
                 />
               </TableCell>
-              <TableCell sortDirection={orderBy === "fileName" ? order : false}>
+              <TableCell>
                 <TableSortLabel
                   active={orderBy === "fileName"}
                   direction={orderBy === "fileName" ? order : "asc"}
@@ -264,7 +266,7 @@ const BatchesPage = () => {
                   File Name
                 </TableSortLabel>
               </TableCell>
-              <TableCell sortDirection={orderBy === "createdAt" ? order : false}>
+              <TableCell>
                 <TableSortLabel
                   active={orderBy === "createdAt"}
                   direction={orderBy === "createdAt" ? order : "asc"}
@@ -275,7 +277,7 @@ const BatchesPage = () => {
               </TableCell>
               <TableCell>Product Name</TableCell>
               <TableCell>Document</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
 
@@ -288,13 +290,7 @@ const BatchesPage = () => {
                 const checked = isSelected(doc.id);
 
                 return (
-                  <TableRow
-                    key={doc.id}
-                    hover
-                    role="checkbox"
-                    aria-checked={checked}
-                    selected={checked}
-                  >
+                  <TableRow key={doc.id} hover selected={checked}>
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
@@ -303,30 +299,20 @@ const BatchesPage = () => {
                       />
                     </TableCell>
                     <TableCell>{doc.fileName}</TableCell>
+                    <TableCell>{new Date(doc.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>{details ? cleaned["PRODUCT NAME"] || "N/A" : <em>Loading...</em>}</TableCell>
+                    <TableCell>{details ? cleaned["DOCUMENT NAME"] || "N/A" : <em>Loading...</em>}</TableCell>
                     <TableCell>
-                      {new Date(doc.createdAt).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      {details ? (
-                        cleaned["PRODUCT NAME"] || "N/A"
-                      ) : (
-                        <em>Loading...</em>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {details ? (
-                        cleaned["DOCUMENT NAME"] || "N/A"
-                      ) : (
-                        <em>Loading...</em>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => handleView(doc)}
-                      >
+                      <Button variant="contained" size="small" onClick={() => handleView(doc)} sx={{ mr: 1 }}>
                         View
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        onClick={() => handleDelete(doc.id)}
+                      >
+                        Delete
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -341,12 +327,15 @@ const BatchesPage = () => {
           count={filteredDocs.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onPageChange={(e, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
         />
       </TableContainer>
 
-      {/* Dialog */}
+      {/* Viewer Dialog */}
       <Dialog open={open} onClose={handleClose} maxWidth="xl" fullWidth>
         <DialogTitle>{selectedDoc?.fileName || "Document Viewer"}</DialogTitle>
         <DialogContent dividers>
@@ -356,19 +345,12 @@ const BatchesPage = () => {
             selectedDoc && (
               <div style={{ display: "flex", gap: "20px" }}>
                 {pdfUrl && (
-                  <div
-                    style={{
-                      flex: 1,
-                      height: "85vh",
-                      border: "1px solid #ccc",
-                    }}
-                  >
+                  <div style={{ flex: 1, height: "85vh", border: "1px solid #ccc" }}>
                     <Worker workerUrl={`//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`}>
                       <Viewer fileUrl={pdfUrl} plugins={[defaultLayoutPluginInstance]} />
                     </Worker>
                   </div>
                 )}
-
                 <div
                   style={{
                     flex: 1,
@@ -381,11 +363,7 @@ const BatchesPage = () => {
                   }}
                 >
                   <h3>Extracted Data</h3>
-                  {docDetails ? (
-                    <DataDisplay data={docDetails.cleanedJson} />
-                  ) : (
-                    <p>Loading extracted data...</p>
-                  )}
+                  {docDetails ? <DataDisplay data={docDetails.cleanedJson} /> : <p>Loading extracted data...</p>}
                 </div>
               </div>
             )
