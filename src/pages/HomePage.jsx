@@ -5,7 +5,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import DataDisplay from "../components/DataDisplay";
 
-const API_URL = "http://localhost:5000"; // make sure server uses PORT=5000
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 const HomePage = () => {
   const [file, setFile] = useState(null);

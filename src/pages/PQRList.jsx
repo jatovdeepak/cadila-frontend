@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import PQR from "./PQR";
 
-const API_URL = "http://localhost:5000";
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 const PQRList = () => {
   const [pqrList, setPqrList] = useState([]);
@@ -27,19 +27,20 @@ const PQRList = () => {
   const [pqrData, setPqrData] = useState(null);
 
   // Fetch PQR list
+  const fetchPQRs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/pqrs`);
+      const data = await res.json();
+      setPqrList(data); // [{_id, name, createdAt}]
+    } catch (err) {
+      console.error("Error fetching PQRs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPQRs = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/pqrs`);
-        const data = await res.json();
-        setPqrList(data); // [{_id, name, createdAt}]
-      } catch (err) {
-        console.error("Error fetching PQRs:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPQRs();
   }, []);
 
@@ -49,7 +50,7 @@ const PQRList = () => {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/pqrs/${pqrId}`);
-      if (!res.ok) throw new Error("PQR not found");
+      // if (!res.ok) throw new Error("PQR not found");
       const data = await res.json();
       setPqrData(data);
     } catch (err) {
@@ -57,6 +58,28 @@ const PQRList = () => {
       setPqrData({ error: err.message });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (pqrId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PQR?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`${API_URL}/pqrs/${pqrId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Failed to delete PQR");
+      }
+      // Remove deleted PQR from list without refetching
+      setPqrList((prev) => prev.filter((pqr) => pqr._id !== pqrId));
+    } catch (err) {
+      console.error("Error deleting PQR:", err);
+      alert("Failed to delete PQR. Check console for details.");
     }
   };
 
@@ -76,7 +99,7 @@ const PQRList = () => {
               <TableCell>#</TableCell>
               <TableCell>PQR Name</TableCell>
               <TableCell>Created At</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -100,13 +123,22 @@ const PQRList = () => {
                   <TableCell>
                     {new Date(pqr.createdAt).toLocaleString()}
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     <Button
                       variant="contained"
                       size="small"
+                      sx={{ mr: 1 }}
                       onClick={() => handleView(pqr._id)}
                     >
                       View
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      onClick={() => handleDelete(pqr._id)}
+                    >
+                      Delete
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -121,8 +153,6 @@ const PQRList = () => {
         <DialogTitle>PQR Data</DialogTitle>
         <DialogContent dividers>
           <PQR />
-
-
           {loading ? (
             <CircularProgress />
           ) : pqrData ? (
