@@ -341,106 +341,46 @@ const Table1 = () => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Paper>
-    {/* <div style={{ height: "800px", width: "800px", margin: "0 100px" }}>
-      <ARpHChart data={chartData} /> 
-      <AROpticalRotationChart data={chartData} />
-    </div> */}
-    {/* Charts */}
-    {/* <div style={{ height: "800px", width: "800px", margin: "0 100px" }}>
-        <DynamicChart data={filteredData} dataKey="pH" label="pH" color="#1976d2" />
-        <DynamicChart
-          data={filteredData}
-          dataKey="specificOpticalRotation"
-          label="Specific Optical Rotation"
-          color="#388e3c"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="relatedSubstances.impurityA"
-          label="Impurity A"
-          color="#d32f2f"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="relatedSubstances.impurityB"
-          label="Impurity B"
-          color="#f57c00"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="relatedSubstances.impurityC"
-          label="Impurity C"
-          color="#7b1fa2"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="relatedSubstances.total"
-          label="Total Impurities"
-          color="#455a64"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="water"
-          label="Water"
-          color="#0288d1"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="sulfatedAsh"
-          label="Sulfated Ash"
-          color="#8d6e63"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="assay"
-          label="Assay"
-          color="#2e7d32"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="residualSolvents.acetone"
-          label="Acetone"
-          color="#c2185b"
-        />
-        <DynamicChart
-          data={filteredData}
-          dataKey="particleSize"
-          label="Particle Size (µm avg.)"
-          color="#512da8"
-        />
-      </div> */}
-
 
 
        {/* Dropdown + Chart */}
-       <Box sx={{ mt: 4, width: "400px", mx: "330px" }}>
-        <FormControl fullWidth>
-          <InputLabel>Select Metric</InputLabel>
-          <Select
-            value={selectedMetric}
-            label="Select Metric"
-            onChange={(e) => setSelectedMetric(e.target.value)}
-          >
-            {chartOptions.map((opt) => (
-              <MenuItem key={opt.key} value={opt.key}>
-                {opt.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+        {/* Centered Dropdown + Chart */}
+      <Box
+        sx={{
+          mt: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ width: "400px", mb: 3 }}>
+          <FormControl fullWidth>
+            <InputLabel>Select Metric</InputLabel>
+            <Select
+              value={selectedMetric}
+              label="Select Metric"
+              onChange={(e) => setSelectedMetric(e.target.value)}
+            >
+              {chartOptions.map((opt) => (
+                <MenuItem key={opt.key} value={opt.key}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
 
-      {/* Render selected chart */}
-      <div style={{ height: "800px", width: "800px", margin: "30px 100px" }}>
-        {selectedChart && (
-          <DynamicChart
-            data={filteredData}
-            dataKey={selectedChart.key}
-            label={selectedChart.label}
-            color={selectedChart.color}
-          />
-        )}
-      </div>
+        <Box sx={{ height: "800px", width: "800px" }}>
+          {selectedChart && (
+            <DynamicChart
+              data={filteredData}
+              dataKey={selectedChart.key}
+              label={selectedChart.label}
+              color={selectedChart.color}
+            />
+          )}
+        </Box>
+      </Box>
     </>
   );
 };

@@ -152,7 +152,7 @@ const Sidebar = () => {
         <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
             component={Link}
-            to="/tables"
+            to="/pqr"
             sx={{
               minHeight: 48,
               justifyContent: open ? "initial" : "center",
@@ -173,7 +173,7 @@ const Sidebar = () => {
               <BackupTableIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Tables"
+              primary="PQRs"
               sx={{ opacity: open ? 1 : 0, transition: "opacity 0.3s" }}
             />
           </ListItemButton>
