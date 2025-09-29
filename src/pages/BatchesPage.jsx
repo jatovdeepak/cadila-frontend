@@ -21,6 +21,9 @@ import {
   Paper,
   CircularProgress,
   TextField,
+  Checkbox,
+  Toolbar,
+  Typography,
 } from "@mui/material";
 
 const API_URL = "http://localhost:5000";
@@ -34,6 +37,11 @@ const BatchesPage = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const API_URL = "http://localhost:5000"; 
+
+  // selection state
+  const [selectedRows, setSelectedRows] = useState([]);
+
   // table state
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("fileName");
@@ -42,6 +50,16 @@ const BatchesPage = () => {
   const [search, setSearch] = useState("");
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
+  // 🔸 Fetch PQR List from localStorage (shared with PQRList.jsx)
+  const [pqrList, setPqrList] = useState(() => {
+    const stored = localStorage.getItem("pqrList");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("pqrList", JSON.stringify(pqrList));
+  }, [pqrList]);
 
   // fetch docs + preload details
   useEffect(() => {
@@ -115,6 +133,50 @@ const BatchesPage = () => {
     setPage(0);
   };
 
+  // selection handlers
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      const allIds = filteredDocs.map((doc) => doc.id);
+      setSelectedRows(allIds);
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  };
+
+  const isSelected = (id) => selectedRows.includes(id);
+
+  // 🔸 Generate PQR entries and save to localStorage
+  const handleGeneratePQR = async () => {
+    if (selectedRows.length === 0) return;
+  
+    try {
+      const res = await fetch(`${API_URL}/pqrs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selectedDocIds: selectedRows }),
+      });
+      const data = await res.json();
+  
+      if (res.ok) {
+        alert(`${data.pqr.name} created successfully!`);
+        setSelectedRows([]);
+        setPqrList((prev) => [...prev, data.pqr.name]); // update local storage list
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error creating PQR");
+    }
+  };
+  
+
   // view dialog
   const handleView = async (doc) => {
     setSelectedDoc(doc);
@@ -147,22 +209,52 @@ const BatchesPage = () => {
     <div>
       <h1>Batches</h1>
 
-      {/* Search Bar */}
-      <TextField
-        label="Search"
-        variant="outlined"
-        size="small"
-        fullWidth
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: "16px" }}
-      />
+      {/* Toolbar with search + button */}
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "0 0 16px 0",
+        }}
+      >
+        <TextField
+          label="Search"
+          variant="outlined"
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ flex: 1, marginRight: "16px" }}
+        />
+
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={selectedRows.length === 0}
+          onClick={handleGeneratePQR}
+        >
+          Generate PQR
+        </Button>
+      </Toolbar>
 
       {/* Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
             <TableRow>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  color="primary"
+                  indeterminate={
+                    selectedRows.length > 0 &&
+                    selectedRows.length < filteredDocs.length
+                  }
+                  checked={
+                    filteredDocs.length > 0 &&
+                    selectedRows.length === filteredDocs.length
+                  }
+                  onChange={handleSelectAll}
+                />
+              </TableCell>
               <TableCell sortDirection={orderBy === "fileName" ? order : false}>
                 <TableSortLabel
                   active={orderBy === "fileName"}
@@ -172,9 +264,7 @@ const BatchesPage = () => {
                   File Name
                 </TableSortLabel>
               </TableCell>
-              <TableCell
-                sortDirection={orderBy === "createdAt" ? order : false}
-              >
+              <TableCell sortDirection={orderBy === "createdAt" ? order : false}>
                 <TableSortLabel
                   active={orderBy === "createdAt"}
                   direction={orderBy === "createdAt" ? order : "asc"}
@@ -195,8 +285,23 @@ const BatchesPage = () => {
               .map((doc) => {
                 const details = detailsCache[doc.id];
                 const cleaned = details?.cleanedJson?.[0] || {};
+                const checked = isSelected(doc.id);
+
                 return (
-                  <TableRow key={doc.id}>
+                  <TableRow
+                    key={doc.id}
+                    hover
+                    role="checkbox"
+                    aria-checked={checked}
+                    selected={checked}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={checked}
+                        onChange={() => handleSelectRow(doc.id)}
+                      />
+                    </TableCell>
                     <TableCell>{doc.fileName}</TableCell>
                     <TableCell>
                       {new Date(doc.createdAt).toLocaleString()}
@@ -258,13 +363,8 @@ const BatchesPage = () => {
                       border: "1px solid #ccc",
                     }}
                   >
-                    <Worker
-                      workerUrl={`//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`}
-                    >
-                      <Viewer
-                        fileUrl={pdfUrl}
-                        plugins={[defaultLayoutPluginInstance]}
-                      />
+                    <Worker workerUrl={`//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`}>
+                      <Viewer fileUrl={pdfUrl} plugins={[defaultLayoutPluginInstance]} />
                     </Worker>
                   </div>
                 )}

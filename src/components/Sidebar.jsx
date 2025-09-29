@@ -152,6 +152,37 @@ const Sidebar = () => {
         <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
             component={Link}
+            to="/pqrlist"
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+              "&:hover": {
+                backgroundColor: hoverBg,
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                color: onPrimaryText,
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <BackupTableIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="PQR List"
+              sx={{ opacity: open ? 1 : 0, transition: "opacity 0.3s" }}
+            />
+          </ListItemButton>
+        </ListItem>
+
+        {/* Table Link */}
+        <ListItem disablePadding sx={{ display: "block" }}>
+          <ListItemButton
+            component={Link}
             to="/pqr"
             sx={{
               minHeight: 48,
@@ -173,11 +204,12 @@ const Sidebar = () => {
               <BackupTableIcon />
             </ListItemIcon>
             <ListItemText
-              primary="PQRs"
+              primary="PQR Table"
               sx={{ opacity: open ? 1 : 0, transition: "opacity 0.3s" }}
             />
           </ListItemButton>
         </ListItem>
+
       </List>
     </Drawer>
   );

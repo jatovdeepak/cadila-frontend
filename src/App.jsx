@@ -4,8 +4,9 @@ import Sidebar from "./components/Sidebar";
 import HomePage from "./pages/HomePage";
 import BatchesPage from "./pages/BatchesPage";
 import { Box } from "@mui/material";
-import Table1 from "./pages/Table1";
+// import Table1 from "./pages/Table1";
 import PQR from "./pages/PQR";
+import PQRList from "./pages/PQRList";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/batches" element={<BatchesPage />} />
           <Route path="/pqr" element={<PQR />} />
+          <Route path="/pqrlist" element={<PQRList />} />
         </Routes>
       </Box>
     </Box>
