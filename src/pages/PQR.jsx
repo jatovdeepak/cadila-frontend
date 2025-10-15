@@ -1,6 +1,6 @@
 import React from "react";
+import { CircularProgress, Typography, Box } from "@mui/material";
 import Table1 from "./Table1";
-// import PqrForm from "./PqrForm";
 import ProductQualityReviewForm from "./ProductQualityReviewForm";
 import ProductInformationForm from "./ProductInformationForm";
 import PQRReviewContForm from "./PQRReviewContForm";
@@ -9,34 +9,45 @@ import PQRReviewContForm3 from "./PQRReviewContForm3";
 import PQRReviewContForm4 from "./PQRReviewContForm4";
 import PQRReviewContForm5 from "./PQRReviewContForm5";
 
-const PQR = () => {
+const PQR = ({ data, loading }) => {
+  // Show loader when fetching
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Show message if no data
+  if (!data) {
+    return <Typography>No PQR data available.</Typography>;
+  }
+
+  // Handle API error object
+  if (data.error) {
+    return (
+      <Typography color="error" sx={{ mt: 2 }}>
+        Error loading PQR: {data.error}
+      </Typography>
+    );
+  }
+
   return (
-    <>
-      <div>
-        <ProductQualityReviewForm />
-      </div>
-      <div>
-        <ProductInformationForm />
-      </div>
-      <div>
-        <PQRReviewContForm />
-      </div>
-      <div>
-        <PQRReviewContForm2 />
-      </div>
-      <div>
-        <PQRReviewContForm3 />
-      </div>
-      <div>
-        <PQRReviewContForm4 />
-      </div>
-      <div>
-        <PQRReviewContForm5 />
-      </div>
-      <div>
-        <Table1 />
-      </div>
-    </>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      {/* <Typography variant="h6" gutterBottom>
+        Product Quality Review — {data.name || "Untitled"}
+      </Typography> */}
+
+      <ProductQualityReviewForm data={data} />
+      <ProductInformationForm data={data} />
+      <PQRReviewContForm data={data} />
+      <PQRReviewContForm2 data={data} />
+      <PQRReviewContForm3 data={data} />
+      <PQRReviewContForm4 data={data} />
+      <PQRReviewContForm5 data={data} />
+      <Table1 data={data} />
+    </Box>
   );
 };
 

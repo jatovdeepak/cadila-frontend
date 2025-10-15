@@ -152,7 +152,7 @@ const PQRList = () => {
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>PQR Data</DialogTitle>
         <DialogContent dividers>
-          <PQR />
+        <PQR data={pqrData} loading={loading} />
           {loading ? (
             <CircularProgress />
           ) : pqrData ? (
