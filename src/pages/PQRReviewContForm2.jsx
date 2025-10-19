@@ -1,235 +1,280 @@
-import React from 'react';
+import React from "react";
 
-const PQRReviewContForm2 = () => {
-  // Dummy data based on the content of Clindamycin capsules 150 mg EC060-4.pdf (Page 4)
-  const data = {
+const PQRReviewContForm2 = ({ data = {} }) => {
+  console.log("data from PQR review continued form 2", data);
+
+  // Safely extract mergedJson
+  const merged = data?.mergedJson || {};
+
+  // Safe mapping with fallbacks
+  const safe = {
     // Header/Footer Info
-    company: 'CADILA PHARMACEUTICALS LIMITED',
-    annexure: 'ANNEXURE - I (Ref. SOP No. DQA 011)',
-    page: 'Page: 4 of 7',
-    formNo: 'FORM NO. FDQA011-01-13',
+    header: {
+      company: merged["COMPANY NAME"] || "",
+      annexure:
+        merged["ANNEXURE"] || "",
+      page: merged["PAGE"] || "Page: 4 of 7",
+      formNo: merged["FORM NO"] || "",
+    },
 
     // Product Info (Cont.)
-    productName: 'Clindamycin Capsules 150 mg',
-    productCode: 'EC060',
-    market: 'Export (Somex Pharma-UK)',
-    reviewPeriod: '1st JANUARY 2024 to 28th FEBRUARY 2025',
+    productName: merged["PRODUCT NAME"] || "",
+    productCode: merged["PRODUCT CODE"] || "",
+    market: merged["MARKET"] || "",
+    reviewPeriod: merged["REVIEW PERIOD"] || "",
 
-    // III. A review... (Cont. from Page 3)
-    capaStatus: 'Not applicable',
+    // III. CAPA
+    capaStatus: merged["CAPA STATUS"] || "",
 
     // Retain sample periodic observation
-    retainSampleObservation: 'Physical Observation record of Retain samples has been checked and no abnormal observation has been found during the review period.',
+    retainSampleObservation:
+      merged["RETAIN SAMPLE OBSERVATION"] ||
+      "",
 
-    // Review of any other quality issue (if any)
-    qualityIssueReview: 'No quality issue has been reported during the review period.',
+    // Review of any other quality issue
+    qualityIssueReview:
+      merged["QUALITY ISSUE REVIEW"] ||
+      "",
 
-    // V. Review of change controls:
-    processRelatedChanges: 'No process related changes observed during the review period.',
-    analyticalMethodChanges: 'No change has been reported with respect to Analytical method period.',
+    // V. Review of change controls
+    processRelatedChanges:
+      merged["PROCESS RELATED CHANGES"] ||
+      "",
+    analyticalMethodChanges:
+      merged["ANALYTICAL METHOD CHANGES"] ||
+      "",
     mmdRelatedChange: {
-      newCC: 'Four Change Control has been Observed during this review period. Change Control No: P/CC/PFD/ICH/010/24, P/CC/PFD/ICH/035/24, P/CC/PFD/ICH/049/24, PCC-DHLK-RA-24-000, PCC-DHLK-RA-24-0007. Refer Attachment: VI.',
-      previousCC: 'One previous year change control also consider in this review period & its still open. Change control no: P/CC/PFD/ICH/47/21.',
+      newCC:
+        merged["MMD NEW CC"] ||
+        "",
+      previousCC:
+        merged["MMD PREVIOUS CC"] ||
+        "",
     },
-    otherChanges: 'Nil',
-    impactOfChanges: 'There is no quality impact on product with respect to change control initiated during the review period.',
-    changeControlCAPAStatus: 'Refer Attachment: VII',
+    otherChanges: merged["OTHER CHANGES"] || "",
+    impactOfChanges:
+      merged["IMPACT OF CHANGES"] ||
+      "",
+    changeControlCAPAStatus:
+      merged["CHANGE CONTROL CAPA STATUS"] || "",
 
-    // VI. Review of Approved Variation
-    implementationOfVariations: 'Nil',
+    // VI. Review of approved variation
+    implementationOfVariations:
+      merged["IMPLEMENTATION OF VARIATIONS"] || "",
   };
 
   const styles = {
     container: {
-      fontFamily: 'Arial, sans-serif',
-      maxWidth: '800px',
-      // Fixed: Horizontal centering for correct flow
-      margin: '20px auto', 
-      padding: '20px',
-      border: '1px solid #000',
+      fontFamily: "Arial, sans-serif",
+      maxWidth: "800px",
+      margin: "20px auto",
+      padding: "20px",
+      border: "1px solid #000",
     },
-    // --- HEADER BLOCK STYLES (Compact) ---
     headerBlock: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      borderBottom: '2px solid #000',
-      paddingBottom: '3px',
-      marginBottom: '5px',
-      fontSize: '10px',
+      display: "flex",
+      justifyContent: "space-between",
+      borderBottom: "2px solid #000",
+      paddingBottom: "3px",
+      marginBottom: "5px",
+      fontSize: "10px",
     },
     headerText: {
-      lineHeight: '1.2',
-      fontWeight: 'bold',
-      margin: '0',
+      lineHeight: "1.2",
+      fontWeight: "bold",
+      margin: "0",
     },
     headerRightText: {
-      textAlign: 'right',
-      margin: '0',
+      textAlign: "right",
+      margin: "0",
     },
     formNoBottom: {
-      fontSize: '10px',
-      marginBottom: '10px',
-      textAlign: 'right',
+      fontSize: "10px",
+      marginBottom: "10px",
+      textAlign: "right",
     },
-    // --- TITLE STYLES (Compact) ---
     pqrTitle: {
-      textAlign: 'center',
-      fontSize: '16px',
-      margin: '10px 0',
-      padding: '5px',
-      fontWeight: 'bold',
+      textAlign: "center",
+      fontSize: "16px",
+      margin: "10px 0",
+      padding: "5px",
+      fontWeight: "bold",
     },
-    // --- TABLE STYLES (Compact) ---
     table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      marginBottom: '10px',
+      width: "100%",
+      borderCollapse: "collapse",
+      marginBottom: "10px",
       zIndex: 2,
-      position: 'relative',
+      position: "relative",
     },
     td: {
-      border: '1px solid #000',
-      padding: '4px',
-      fontSize: '12px',
-      verticalAlign: 'top',
+      border: "1px solid #000",
+      padding: "4px",
+      fontSize: "12px",
+      verticalAlign: "top",
     },
     tdLabel: {
-      width: '35%',
-      fontWeight: 'bold',
+      width: "35%",
+      fontWeight: "bold",
     },
     tdDelimiter: {
-      width: '10px',
-      textAlign: 'center',
-      fontWeight: 'bold',
+      width: "10px",
+      textAlign: "center",
+      fontWeight: "bold",
     },
     tdData: {
-      width: '60%',
+      width: "60%",
     },
     sectionHeading: {
-        fontSize: '14px',
-        fontWeight: 'bold',
-        padding: '2px 0',
-        marginBottom: '3px',
+      fontSize: "14px",
+      fontWeight: "bold",
+      padding: "2px 0",
+      marginBottom: "3px",
     },
     tableHeaderRow: {
-        backgroundColor: '#e0e0e0',
-        textTransform: 'uppercase',
+      backgroundColor: "#e0e0e0",
+      textTransform: "uppercase",
     },
-    // Style for combined data lines 
     combinedData: {
-      display: 'block',
-      marginBottom: '3px',
-      paddingTop: '3px',
-    }
+      display: "block",
+      marginBottom: "3px",
+      paddingTop: "3px",
+    },
   };
 
-  // Helper function to render a table row
-  const renderTableRow = (label, data, isHeaderRow = false) => (
+  const renderTableRow = (label, value, isHeaderRow = false) => (
     <tr style={isHeaderRow ? styles.tableHeaderRow : {}}>
-      <td style={{ ...styles.td, ...styles.tdLabel, ...(isHeaderRow ? {backgroundColor: '#e0e0e0'} : {}) }}>{label}</td>
-      <td style={{ ...styles.td, ...styles.tdDelimiter, ...(isHeaderRow ? {backgroundColor: '#e0e0e0'} : {}) }}>:</td>
-      <td style={{ ...styles.td, ...styles.tdData }}>{data}</td>
+      <td
+        style={{
+          ...styles.td,
+          ...styles.tdLabel,
+          ...(isHeaderRow ? { backgroundColor: "#e0e0e0" } : {}),
+        }}
+      >
+        {label}
+      </td>
+      <td
+        style={{
+          ...styles.td,
+          ...styles.tdDelimiter,
+          ...(isHeaderRow ? { backgroundColor: "#e0e0e0" } : {}),
+        }}
+      >
+        :
+      </td>
+      <td style={{ ...styles.td, ...styles.tdData }}>{value}</td>
     </tr>
   );
 
   return (
     <div style={styles.container}>
-      {/* --- HEADER BLOCK --- */}
+      {/* --- HEADER --- */}
       <div style={styles.headerBlock}>
-        <div style={styles.headerLeft}>
-          <p style={styles.headerText}>
-            **CADILA**
-            <br />
-            **PHARMACEUTICALS**
-            <br />
-            **LIMITED**
-          </p>
+        <div>
+          <p style={styles.headerText}>{safe.header.company}</p>
         </div>
-        <div style={styles.headerRight}>
-          <p style={styles.headerRightText}>{data.annexure} </p>
-          <p style={styles.headerRightText}>{data.page} </p>
+        <div>
+          <p style={styles.headerRightText}>{safe.header.annexure}</p>
+          <p style={styles.headerRightText}>{safe.header.page}</p>
         </div>
       </div>
-      <p style={styles.formNoBottom}>{data.formNo} </p>
+      <p style={styles.formNoBottom}>{safe.header.formNo}</p>
 
-      {/* --- PQR REPORT TITLE --- */}
-      <h2 style={{...styles.pqrTitle, borderBottom: '1px solid #000'}}>PRODUCT QUALITY REVIEW (PQR) </h2>
+      {/* --- TITLE --- */}
+      <h2
+        style={{ ...styles.pqrTitle, borderBottom: "1px solid #000" }}
+      >
+        PRODUCT QUALITY REVIEW (PQR)
+      </h2>
 
-      {/* --- PRODUCT INFORMATION (Cont.) BLOCK --- */}
+      {/* --- PRODUCT INFORMATION (Cont.) --- */}
       <table style={styles.table}>
-        <thead>
-            {renderTableRow('PRODUCT INFORMATION', '', true)}
-        </thead>
+        <thead>{renderTableRow("PRODUCT INFORMATION", "", true)}</thead>
         <tbody>
-            {renderTableRow('Product name', data.productName)}
-            {renderTableRow('Product code', data.productCode)}
-            {renderTableRow('Market', data.market)}
-            {renderTableRow('Review period', data.reviewPeriod)}
+          {renderTableRow("Product name", safe.productName)}
+          {renderTableRow("Product code", safe.productCode)}
+          {renderTableRow("Market", safe.market)}
+          {renderTableRow("Review period", safe.reviewPeriod)}
         </tbody>
       </table>
 
-      {/* --- III. STATUS OF RELATED CAPAS (Cont. from Page 3) --- */}
-      <h3 style={styles.sectionHeading}>III. A review of all batches that failed to meet established specification(s) and out of trend results (Cont.):</h3>
+      {/* --- III. STATUS OF RELATED CAPAS --- */}
+      <h3 style={styles.sectionHeading}>
+        III. A review of all batches that failed to meet established
+        specification(s) and out of trend results (Cont.)
+      </h3>
       <table style={styles.table}>
         <tbody>
-            {renderTableRow('Status of related CAPAs', data.capaStatus)}
+          {renderTableRow("Status of related CAPAs", safe.capaStatus)}
         </tbody>
       </table>
 
       {/* --- RETAIN SAMPLE & QUALITY ISSUE REVIEW --- */}
-      <h3 style={styles.sectionHeading}>Retain Sample & Other Quality Issues:</h3>
+      <h3 style={styles.sectionHeading}>Retain Sample & Other Quality Issues</h3>
       <table style={styles.table}>
         <tbody>
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>Retain sample periodic observation (if any abnormal observation)</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>{data.retainSampleObservation} </td>
-            </tr>
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>Review of any other quality issue (if any)</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>{data.qualityIssueReview} </td>
-            </tr>
+          {renderTableRow(
+            "Retain sample periodic observation (if any abnormal observation)",
+            safe.retainSampleObservation
+          )}
+          {renderTableRow(
+            "Review of any other quality issue (if any)",
+            safe.qualityIssueReview
+          )}
         </tbody>
       </table>
-
 
       {/* --- V. REVIEW OF CHANGE CONTROLS --- */}
-      <h3 style={styles.sectionHeading}>V. Review of change controls: </h3>
+      <h3 style={styles.sectionHeading}>V. Review of change controls</h3>
       <table style={styles.table}>
         <tbody>
-            {/* Process related changes */}
-            {renderTableRow('Process related changes', data.processRelatedChanges)}
-            {/* Analytical method related changes */}
-            {renderTableRow('Analytical method related changes', data.analyticalMethodChanges)}
-            {/* MMD related change */}
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>MMD related change</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>
-                    <span style={styles.combinedData}>{data.mmdRelatedChange.newCC}</span>
-                    <span style={styles.combinedData}>{data.mmdRelatedChange.previousCC}</span>
-                </td>
-            </tr>
-            {/* Other changes */}
-            {renderTableRow('Other changes', data.otherChanges)}
-            {/* Impact of the changes on the product quality */}
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>Impact of the changes on the product quality</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>{data.impactOfChanges}</td>
-            </tr>
-            {/* Status of related CAPAs */}
-            {renderTableRow('Status of related CAPAs', data.changeControlCAPAStatus)}
+          {renderTableRow(
+            "Process related changes",
+            safe.processRelatedChanges
+          )}
+          {renderTableRow(
+            "Analytical method related changes",
+            safe.analyticalMethodChanges
+          )}
+          <tr>
+            <td style={{ ...styles.td, ...styles.tdLabel }}>
+              MMD related change
+            </td>
+            <td style={styles.tdDelimiter}>:</td>
+            <td style={styles.tdData}>
+              <span style={styles.combinedData}>
+                {safe.mmdRelatedChange.newCC}
+              </span>
+              <span style={styles.combinedData}>
+                {safe.mmdRelatedChange.previousCC}
+              </span>
+            </td>
+          </tr>
+          {renderTableRow("Other changes", safe.otherChanges)}
+          <tr>
+            <td style={{ ...styles.td, ...styles.tdLabel }}>
+              Impact of the changes on the product quality
+            </td>
+            <td style={styles.tdDelimiter}>:</td>
+            <td style={styles.tdData}>{safe.impactOfChanges}</td>
+          </tr>
+          {renderTableRow(
+            "Status of related CAPAs",
+            safe.changeControlCAPAStatus
+          )}
         </tbody>
       </table>
-      
-      {/* --- VI. REVIEW OF APPROVED VARIATION FOR EXISTING MARKETING AUTHORIZATION --- */}
-      <h3 style={styles.sectionHeading}>VI. Review of Approved Variation for existing marketing authorization: [cite: 116]</h3>
+
+      {/* --- VI. REVIEW OF APPROVED VARIATIONS --- */}
+      <h3 style={styles.sectionHeading}>
+        VI. Review of Approved Variation for existing marketing authorization
+      </h3>
       <table style={styles.table}>
         <tbody>
-            {/* Implementation of approved variations */}
-            {renderTableRow('Implementation of approved variations', data.implementationOfVariations)}
+          {renderTableRow(
+            "Implementation of approved variations",
+            safe.implementationOfVariations
+          )}
         </tbody>
       </table>
     </div>

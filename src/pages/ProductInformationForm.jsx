@@ -1,207 +1,223 @@
-import React from 'react';
+import React from "react";
 
-const ProductInformationForm = () => {
-  // Dummy data based on the PDF content
-  const data = {
-    // Top Product Info Block
-    productName: 'Clindamycin Capsules 150 mg',
-    productCode: 'EC060',
-    market: 'Export (Somex Pharma-UK)',
-    reviewPeriod: '1st JANUARY 2024 to 28th FEBRUARY 2025',
+const ProductInformationForm = ({ data = {} }) => {
+  console.log("data from product information form", data);
 
-    // General Information Table
-    genericName: 'Clindamycin Capsules 150 mg',
-    description: 'White to off - white free flowing powder in a capsule with white cap and white body with imprint "C150" on the body.',
-    labelClaim: 'Each capsule contains Clindamycin hydrochloride equivalent to 150 mg of Clindamycin.',
-    standardBatchSize: 'N/A', // Set to N/A as per manual review of the source data structure
-    shelfLife: '24 months from the date of manufacturing.',
-    storageCondition: 'Below 25°C',
-    mfgLocation: 'Cadila Pharmaceuticals Ltd, Dholka',
-    licenceNo: 'GUJ/DRUGS/G/1090',
-    packingDetail1: '10x10\'s Capsules Blister pack',
-    packingDetail2: '3x8\'S CAPSULES',
-    noOfBatches: 12,
-    batchNos: 'EC060E4001 to EC060E4012',
-    noOfNonStandardBatches: 'None of the batch has been manufactured with non-standard batch size.',
-    noOfBatchesReleased: '12 Batches',
-    batchesRejected: 'None of the batch has been rejected during the review period.',
+  // Safely extract nested mergedJson
+  const merged = data?.mergedJson || {};
+
+  // Safely map fields with fallback values
+  const safe = {
+    productName: merged["PRODUCT NAME"] || "",
+    productCode: merged["PRODUCT CODE"] || "",
+    market: merged["MARKET"] || "",
+    reviewPeriod: merged["REVIEW PERIOD"] || "",
+
+    // General Information
+    genericName: merged["GENERIC NAME"] || "",
+    description: merged["DESCRIPTION OF PRODUCT"] || "",
+    labelClaim: merged["LABEL CLAIM"] || "",
+    standardBatchSize: merged["STANDARD BATCH SIZE"] || "N/A",
+    shelfLife: merged["SHELF LIFE"] || "",
+    storageCondition: merged["STORAGE CONDITION"] || "",
+    mfgLocation: merged["MANUFACTURING LOCATION"] || "",
+    licenceNo: merged["LICENCE NO"] || "",
+    packingDetail1: merged["PACKING DETAIL 1"] || "",
+    packingDetail2: merged["PACKING DETAIL 2"] || "",
+    noOfBatches: merged["NO OF BATCHES"] || "",
+    batchNos: merged["BATCH NOS"] || "",
+    noOfNonStandardBatches: merged["NO OF NON STANDARD BATCHES"] || "",
+    noOfBatchesReleased: merged["NO OF BATCHES RELEASED"] || "",
+    batchesRejected: merged["BATCHES REJECTED"] || "",
 
     // Header/Footer Info
-    company: 'CADILA PHARMACEUTICALS LIMITED',
-    annexure: 'ANNEXURE - I (Ref. SOP No. DQA 011)',
-    page: 'Page: 2 of 7',
-    formNo: 'FORM NO. FDQA011-01-13',
+    header: {
+      company: merged["COMPANY NAME"] || "",
+      annexure:
+        merged["ANNEXURE"] || "",
+      page: merged["PAGE"] || "Page: 2 of 7",
+      formNo: merged["FORM NO"] || "",
+    },
   };
 
   const styles = {
     container: {
-      fontFamily: 'Arial, sans-serif',
-      maxWidth: '800px',
-      margin: '20px auto', 
-      padding: '20px',
-      border: '1px solid #000',
-      position: 'relative',
+      fontFamily: "Arial, sans-serif",
+      maxWidth: "800px",
+      margin: "20px auto",
+      padding: "20px",
+      border: "1px solid #000",
+      position: "relative",
     },
-    // --- HEADER BLOCK STYLES ---
     headerBlock: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      borderBottom: '2px solid #000',
-      paddingBottom: '5px',
-      marginBottom: '10px',
-      fontSize: '10px',
+      display: "flex",
+      justifyContent: "space-between",
+      borderBottom: "2px solid #000",
+      paddingBottom: "5px",
+      marginBottom: "10px",
+      fontSize: "10px",
     },
     headerText: {
-      lineHeight: '1.2',
-      fontWeight: 'bold',
-      margin: '0',
+      lineHeight: "1.2",
+      fontWeight: "bold",
+      margin: "0",
     },
     headerRightText: {
-      textAlign: 'right',
-      margin: '0',
+      textAlign: "right",
+      margin: "0",
     },
     formNoBottom: {
-      fontSize: '10px',
-      marginBottom: '20px',
-      textAlign: 'right',
+      fontSize: "10px",
+      marginBottom: "20px",
+      textAlign: "right",
     },
-    // --- TITLE STYLES ---
     pqrTitle: {
-      textAlign: 'center',
-      fontSize: '16px',
-      margin: '20px 0',
-      padding: '5px',
+      textAlign: "center",
+      fontSize: "16px",
+      margin: "20px 0",
+      padding: "5px",
     },
-    // --- PRODUCT INFO BLOCK ---
     infoBlock: {
-      display: 'grid',
-      gridTemplateColumns: '150px 10px 1fr',
-      gap: '5px',
-      fontSize: '12px',
-      marginBottom: '20px',
-      border: '1px solid #000',
-      padding: '10px',
+      display: "grid",
+      gridTemplateColumns: "150px 10px 1fr",
+      gap: "5px",
+      fontSize: "12px",
+      marginBottom: "20px",
+      border: "1px solid #000",
+      padding: "10px",
     },
     infoLabel: {
-      fontWeight: 'bold',
+      fontWeight: "bold",
     },
     infoDelimiter: {
-      fontWeight: 'bold',
-      textAlign: 'center',
+      fontWeight: "bold",
+      textAlign: "center",
     },
-    // --- GENERAL INFO TABLE ---
     table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      marginBottom: '20px',
+      width: "100%",
+      borderCollapse: "collapse",
+      marginBottom: "20px",
       zIndex: 2,
-      position: 'relative',
-    },
-    td: {
-      border: '1px solid #000',
-      padding: '8px',
-      fontSize: '12px',
-      verticalAlign: 'top',
+      position: "relative",
     },
     tdLabel: {
-      width: '35%',
-      fontWeight: 'bold',
-      backgroundColor: '#f0f0f0',
-      textTransform: 'uppercase',
+      width: "35%",
+      fontWeight: "bold",
+      backgroundColor: "#f0f0f0",
+      textTransform: "uppercase",
+      border: "1px solid #000",
+      padding: "8px",
     },
     tdDelimiter: {
-      width: '10px',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      backgroundColor: '#f0f0f0',
+      width: "10px",
+      textAlign: "center",
+      fontWeight: "bold",
+      backgroundColor: "#f0f0f0",
+      border: "1px solid #000",
+      padding: "8px",
     },
     tdData: {
-      width: '60%',
+      width: "60%",
+      border: "1px solid #000",
+      padding: "8px",
+      fontSize: "12px",
+      verticalAlign: "top",
     },
     tableHeader: {
-        border: '1px solid #000',
-        padding: '8px',
-        fontSize: '14px',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        backgroundColor: '#e0e0e0',
-    }
+      border: "1px solid #000",
+      padding: "8px",
+      fontSize: "14px",
+      textAlign: "center",
+      fontWeight: "bold",
+      backgroundColor: "#e0e0e0",
+    },
   };
 
-  // Helper function to render a table row
-  const renderTableRow = (label, data) => (
+  const renderTableRow = (label, value) => (
     <tr>
       <td style={styles.tdLabel}>{label}</td>
       <td style={styles.tdDelimiter}>:</td>
-      <td style={styles.tdData}>{data}</td>
+      <td style={styles.tdData}>{value}</td>
     </tr>
   );
 
   return (
     <div style={styles.container}>
-      {/* --- HEADER BLOCK --- */}
+      {/* --- HEADER --- */}
       <div style={styles.headerBlock}>
-        <div style={styles.headerLeft}>
-          <p style={styles.headerText}>
-            **CADILA**
-            <br />
-            **PHARMACEUTICALS**
-            <br />
-            **LIMITED**
-          </p>
+        <div>
+          <p style={styles.headerText}>{safe.header.company}</p>
         </div>
-        <div style={styles.headerRight}>
-          <p style={styles.headerRightText}>{data.annexure}</p>
-          <p style={styles.headerRightText}>{data.page}</p>
+        <div>
+          <p style={styles.headerRightText}>{safe.header.annexure}</p>
+          <p style={styles.headerRightText}>{safe.header.page}</p>
         </div>
       </div>
-      <p style={styles.formNoBottom}>{data.formNo}</p>
+      <p style={styles.formNoBottom}>{safe.header.formNo}</p>
 
-      {/* --- PQR REPORT TITLE --- */}
+      {/* --- TITLE --- */}
       <h2 style={styles.pqrTitle}>PRODUCT QUALITY REVIEW (PQR)</h2>
+      <h3 style={{ ...styles.pqrTitle, border: "none", margin: "10px 0" }}>
+        PRODUCT INFORMATION
+      </h3>
 
-      {/* --- PRODUCT INFORMATION BLOCK (Top Section) --- */}
-      <h3 style={{...styles.pqrTitle, border: 'none', margin: '10px 0'}}>PRODUCT INFORMATION</h3>
-
+      {/* --- PRODUCT INFO BLOCK --- */}
       <div style={styles.infoBlock}>
         <span style={styles.infoLabel}>Product name</span>
         <span style={styles.infoDelimiter}>:</span>
-        <span>{data.productName}</span>
+        <span>{safe.productName}</span>
 
         <span style={styles.infoLabel}>Product code</span>
         <span style={styles.infoDelimiter}>:</span>
-        <span>{data.productCode}</span>
+        <span>{safe.productCode}</span>
 
         <span style={styles.infoLabel}>Market</span>
         <span style={styles.infoDelimiter}>:</span>
-        <span>{data.market}</span>
+        <span>{safe.market}</span>
 
         <span style={styles.infoLabel}>Review period</span>
         <span style={styles.infoDelimiter}>:</span>
-        <span>{data.reviewPeriod}</span>
+        <span>{safe.reviewPeriod}</span>
       </div>
 
       {/* --- GENERAL INFORMATION TABLE --- */}
       <table style={styles.table}>
         <thead>
-            <tr>
-                <td colSpan="3" style={styles.tableHeader}>General Information about the product</td>
-            </tr>
+          <tr>
+            <td colSpan="3" style={styles.tableHeader}>
+              General Information about the product
+            </td>
+          </tr>
         </thead>
         <tbody>
-          {renderTableRow('Generic Name of Product', data.genericName)}
-          {renderTableRow('Description of Product', data.description)}
-          {renderTableRow('Label claim', data.labelClaim)}
-          {renderTableRow('Shelf Life', data.shelfLife)}
-          {renderTableRow('Storage Condition', data.storageCondition)}
-          {renderTableRow('Manufacturing location', data.mfgLocation)}
-          {renderTableRow('Licence No.', data.licenceNo)}
-          {renderTableRow('Packing Detail', data.packingDetail1 + ' / ' + data.packingDetail2)}
-          {renderTableRow('No. of batches manufactured', data.noOfBatches)}
-          {renderTableRow('Batch Nos.', data.batchNos)}
-          {renderTableRow('No. of Batches of non-standard batch sizes', data.noOfNonStandardBatches)}
-          {renderTableRow('No. of batches released', data.noOfBatchesReleased)}
-          {renderTableRow('No. of batches rejected and reason for rejection', data.batchesRejected)}
+          {renderTableRow("Generic Name of Product", safe.genericName)}
+          {renderTableRow("Description of Product", safe.description)}
+          {renderTableRow("Label claim", safe.labelClaim)}
+          {renderTableRow("Shelf Life", safe.shelfLife)}
+          {renderTableRow("Storage Condition", safe.storageCondition)}
+          {renderTableRow("Manufacturing location", safe.mfgLocation)}
+          {renderTableRow("Licence No.", safe.licenceNo)}
+          {renderTableRow(
+            "Packing Detail",
+            `${safe.packingDetail1}  ${safe.packingDetail2}`
+          )}
+          {renderTableRow(
+            "No. of batches manufactured",
+            safe.noOfBatches
+          )}
+          {renderTableRow("Batch Nos.", safe.batchNos)}
+          {renderTableRow(
+            "No. of Batches of non-standard batch sizes",
+            safe.noOfNonStandardBatches
+          )}
+          {renderTableRow(
+            "No. of batches released",
+            safe.noOfBatchesReleased
+          )}
+          {renderTableRow(
+            "No. of batches rejected and reason for rejection",
+            safe.batchesRejected
+          )}
         </tbody>
       </table>
     </div>

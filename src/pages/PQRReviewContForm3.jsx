@@ -1,143 +1,164 @@
-import React from 'react';
+import React from "react";
 
-const PQRReviewContForm3 = () => {
-  // Dummy data based on the content of Clindamycin capsules 150 mg EC060-5.pdf (Page 5)
-  const data = {
-    // Header/Footer Info
-    company: 'CADILA PHARMACEUTICALS LIMITED',
-    annexure: 'ANNEXURE - I (Ref. SOP No. DQA 011)',
-    page: 'Page: 5 of 7',
-    formNo: 'FORM NO. FDQA011-01-13',
+const PQRReviewContForm3 = ({ data }) => {
+  // --- Extract merged JSON safely ---
+  const merged = data?.mergedJson || {};
 
-    // Product Info (for header consistency)
-    productName: 'Clindamycin Capsules 150 mg',
-    productCode: 'EC060',
-    market: 'Export (Somex Pharma-UK)',
-    reviewPeriod: '1st JANUARY 2024 to 28th FEBRUARY 2025',
+  // --- Map incoming fields with fallbacks ---
+  const info = {
+    company: merged["COMPANY NAME"] || "",
+    annexure: merged["ANNEXURE"] || "",
+    page: merged["PAGE"] || "Page: 5 of 7",
+    formNo: merged["FORM NO"] || "",
 
-    // VII. Review of stability data:
-    stabilityBatches: 'One Batch has been charged for long term Stability Study.',
-    stabilityResultsSummary: 'Not Applicable',
+    productName: merged["PRODUCT NAME"] || "",
+    productCode: merged["PRODUCT CODE"] || "",
+    market: merged["MARKET"] || "",
+    reviewPeriod:
+      merged["REVIEW PERIOD"] || "",
 
-    // VIII. Review of Complaints, Recalls, Return goods:
-    complaintsReceived: 'Not Applicable',
-    capaStatus: 'Not Applicable',
-    batchesRecalled: 'None of the batch has been recalled during the review period.',
-    recallReason: 'Not Applicable',
-    returnGoods: 'None of the batch has been returned during the review period',
+    stabilityBatches:
+      merged["STABILITY BATCHES"] ||
+      "",
+    stabilityResultsSummary:
+      merged["STABILITY RESULTS SUMMARY"] || "",
 
-    // IX. Review of adequacy of any other previous, product process or equipment corrective actions:
-    previousActionsSummary: 'No corrective actions are pending from the previous product quality review reports.',
+    complaintsReceived: merged["COMPLAINTS RECEIVED"] || "",
+    capaStatus: merged["CAPA STATUS"] || "",
+    batchesRecalled:
+      merged["BATCHES RECALLED"] ||
+      "",
+    recallReason: merged["RECALL REASON"] || "",
+    returnGoods:
+      merged["RETURN GOODS"] ||
+      "",
 
-    // X. Review of Post-Marketing commitments for new marketing authorizations:
-    commitmentType: 'Not Applicable',
+    previousActionsSummary:
+      merged["PREVIOUS ACTIONS SUMMARY"] ||
+      "",
+    commitmentType: merged["COMMITMENT TYPE"] || "",
   };
 
+  // --- STYLES ---
   const styles = {
     container: {
-      fontFamily: 'Arial, sans-serif',
-      maxWidth: '800px',
-      // Horizontal centering for correct flow
-      margin: '20px auto', 
-      padding: '20px',
-      border: '1px solid #000',
+      fontFamily: "Arial, sans-serif",
+      maxWidth: "800px",
+      margin: "20px auto",
+      padding: "20px",
+      border: "1px solid #000",
     },
-    // --- HEADER BLOCK STYLES (Compact) ---
     headerBlock: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      borderBottom: '2px solid #000',
-      paddingBottom: '3px',
-      marginBottom: '5px',
-      fontSize: '10px',
+      display: "flex",
+      justifyContent: "space-between",
+      borderBottom: "2px solid #000",
+      paddingBottom: "3px",
+      marginBottom: "5px",
+      fontSize: "10px",
     },
     headerText: {
-      lineHeight: '1.2',
-      fontWeight: 'bold',
-      margin: '0',
+      lineHeight: "1.2",
+      fontWeight: "bold",
+      margin: "0",
     },
     headerRightText: {
-      textAlign: 'right',
-      margin: '0',
+      textAlign: "right",
+      margin: "0",
     },
     formNoBottom: {
-      fontSize: '10px',
-      marginBottom: '10px',
-      textAlign: 'right',
+      fontSize: "10px",
+      marginBottom: "10px",
+      textAlign: "right",
     },
-    // --- TITLE STYLES (Compact) ---
     pqrTitle: {
-      textAlign: 'center',
-      fontSize: '16px',
-      margin: '10px 0',
-      padding: '5px',
-      fontWeight: 'bold',
+      textAlign: "center",
+      fontSize: "16px",
+      margin: "10px 0",
+      padding: "5px",
+      fontWeight: "bold",
     },
-    // --- TABLE STYLES (Compact) ---
     table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      marginBottom: '10px',
+      width: "100%",
+      borderCollapse: "collapse",
+      marginBottom: "10px",
       zIndex: 2,
-      position: 'relative',
+      position: "relative",
     },
     td: {
-      border: '1px solid #000',
-      padding: '4px',
-      fontSize: '12px',
-      verticalAlign: 'top',
+      border: "1px solid #000",
+      padding: "4px",
+      fontSize: "12px",
+      verticalAlign: "top",
     },
     tdLabel: {
-      width: '40%', // Slightly wider label column for longer titles
-      fontWeight: 'bold',
+      width: "40%",
+      fontWeight: "bold",
     },
     tdDelimiter: {
-      width: '10px',
-      textAlign: 'center',
-      fontWeight: 'bold',
+      width: "10px",
+      textAlign: "center",
+      fontWeight: "bold",
     },
     tdData: {
-      width: '55%',
+      width: "55%",
     },
     sectionHeading: {
-        fontSize: '14px',
-        fontWeight: 'bold',
-        padding: '2px 0',
-        marginBottom: '3px',
+      fontSize: "14px",
+      fontWeight: "bold",
+      padding: "2px 0",
+      marginBottom: "3px",
     },
     tableHeaderRow: {
-        backgroundColor: '#e0e0e0',
-        textTransform: 'uppercase',
+      backgroundColor: "#e0e0e0",
+      textTransform: "uppercase",
     },
     subSectionLabel: {
-        fontWeight: 'normal',
-        paddingLeft: '15px',
+      fontWeight: "normal",
+      paddingLeft: "15px",
     },
   };
 
-  // Helper function to render a table row
-  const renderTableRow = (label, data, isHeaderRow = false) => (
-    <tr style={isHeaderRow ? styles.tableHeaderRow : {}}>
-      <td style={{ ...styles.td, ...styles.tdLabel, ...(isHeaderRow ? {backgroundColor: '#e0e0e0'} : {}) }}>{label}</td>
-      <td style={{ ...styles.td, ...styles.tdDelimiter, ...(isHeaderRow ? {backgroundColor: '#e0e0e0'} : {}) }}>:</td>
-      <td style={{ ...styles.td, ...styles.tdData }}>{data}</td>
+  // --- Helpers ---
+  const renderTableRow = (label, value, isHeader = false) => (
+    <tr style={isHeader ? styles.tableHeaderRow : {}}>
+      <td
+        style={{
+          ...styles.td,
+          ...styles.tdLabel,
+          ...(isHeader ? { backgroundColor: "#e0e0e0" } : {}),
+        }}
+      >
+        {label}
+      </td>
+      <td
+        style={{
+          ...styles.td,
+          ...styles.tdDelimiter,
+          ...(isHeader ? { backgroundColor: "#e0e0e0" } : {}),
+        }}
+      >
+        :
+      </td>
+      <td style={{ ...styles.td, ...styles.tdData }}>{value}</td>
     </tr>
   );
-  
-  // Helper function to render a sub-section row (for complaints breakdown)
-  const renderSubRow = (label, data) => (
-      <tr>
-          <td style={{ ...styles.td, ...styles.tdLabel, ...styles.subSectionLabel }}>{label}</td>
-          <td style={styles.tdDelimiter}>:</td>
-          <td style={styles.tdData}>{data}</td>
-      </tr>
+
+  const renderSubRow = (label, value) => (
+    <tr>
+      <td style={{ ...styles.td, ...styles.tdLabel, ...styles.subSectionLabel }}>
+        {label}
+      </td>
+      <td style={styles.tdDelimiter}>:</td>
+      <td style={styles.tdData}>{value}</td>
+    </tr>
   );
 
+  // --- RENDER ---
   return (
     <div style={styles.container}>
-      {/* --- HEADER BLOCK --- */}
+      {/* HEADER */}
       <div style={styles.headerBlock}>
-        <div style={styles.headerLeft}>
+        <div>
           <p style={styles.headerText}>
             **CADILA**
             <br />
@@ -146,85 +167,80 @@ const PQRReviewContForm3 = () => {
             **LIMITED**
           </p>
         </div>
-        <div style={styles.headerRight}>
-          <p style={styles.headerRightText}>{data.annexure}</p>
-          <p style={styles.headerRightText}>{data.page}</p>
+        <div>
+          <p style={styles.headerRightText}>{info.annexure}</p>
+          <p style={styles.headerRightText}>{info.page}</p>
         </div>
       </div>
-      <p style={styles.formNoBottom}>{data.formNo}</p>
+      <p style={styles.formNoBottom}>{info.formNo}</p>
 
-      {/* --- PQR REPORT TITLE --- */}
-      <h2 style={{...styles.pqrTitle, borderBottom: '1px solid #000'}}>PRODUCT QUALITY REVIEW (PQR)</h2>
+      {/* TITLE */}
+      <h2 style={{ ...styles.pqrTitle, borderBottom: "1px solid #000" }}>
+        PRODUCT QUALITY REVIEW (PQR)
+      </h2>
 
-      {/* --- PRODUCT INFORMATION (Cont.) BLOCK --- */}
+      {/* PRODUCT INFO */}
       <table style={styles.table}>
-        <thead>
-            {renderTableRow('PRODUCT INFORMATION', '', true)}
-        </thead>
+        <thead>{renderTableRow("PRODUCT INFORMATION", "", true)}</thead>
         <tbody>
-            {renderTableRow('Product name', data.productName)}
-            {renderTableRow('Product code', data.productCode)}
-            {renderTableRow('Market', data.market)}
-            {renderTableRow('Review period', data.reviewPeriod)}
+          {renderTableRow("Product name", info.productName)}
+          {renderTableRow("Product code", info.productCode)}
+          {renderTableRow("Market", info.market)}
+          {renderTableRow("Review period", info.reviewPeriod)}
         </tbody>
       </table>
 
-      {/* --- VII. REVIEW OF STABILITY DATA --- */}
+      {/* VII. Stability */}
       <h3 style={styles.sectionHeading}>VII. Review of stability data:</h3>
       <table style={styles.table}>
         <tbody>
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>No of batches included for the stability study and reason for their selection</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>{data.stabilityBatches}</td>
-            </tr>
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>Review/summary of the results obtained from the stability program</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>{data.stabilityResultsSummary}</td>
-            </tr>
+          {renderTableRow(
+            "No of batches included for the stability study and reason for their selection",
+            info.stabilityBatches
+          )}
+          {renderTableRow(
+            "Review/summary of the results obtained from the stability program",
+            info.stabilityResultsSummary
+          )}
         </tbody>
       </table>
 
-      {/* --- VIII. REVIEW OF COMPLAINTS, RECALLS, RETURN GOODS --- */}
-      <h3 style={styles.sectionHeading}>VIII. Review of Complaints, Recalls, Return goods:</h3>
+      {/* VIII. Complaints / Recalls */}
+      <h3 style={styles.sectionHeading}>
+        VIII. Review of Complaints, Recalls, Return goods:
+      </h3>
       <table style={styles.table}>
         <tbody>
-            {/* No. of complaints received breakdown */}
-            {renderTableRow('No. of complaints received', data.complaintsReceived, true)}
-            {renderSubRow('Quality complaints', data.complaintsReceived)}
-            {renderSubRow('Packaging complaints', data.complaintsReceived)}
-            {renderSubRow('Other complaints', data.complaintsReceived)}
-            
-            {renderTableRow('Status of related CAPAS', data.capaStatus)}
-            
-            {renderTableRow('No. of batches recalled', data.batchesRecalled)}
-            
-            {renderTableRow('Reason for recall', data.recallReason)}
-            
-            {renderTableRow('Return goods', data.returnGoods)}
-
+          {renderTableRow("No. of complaints received", info.complaintsReceived, true)}
+          {renderSubRow("Quality complaints", info.complaintsReceived)}
+          {renderSubRow("Packaging complaints", info.complaintsReceived)}
+          {renderSubRow("Other complaints", info.complaintsReceived)}
+          {renderTableRow("Status of related CAPAS", info.capaStatus)}
+          {renderTableRow("No. of batches recalled", info.batchesRecalled)}
+          {renderTableRow("Reason for recall", info.recallReason)}
+          {renderTableRow("Return goods", info.returnGoods)}
         </tbody>
       </table>
 
-      {/* --- IX. REVIEW OF ADEQUACY OF ANY OTHER PREVIOUS, PRODUCT PROCESS OR EQUIPMENT CORRECTIVE ACTIONS --- */}
-      <h3 style={styles.sectionHeading}>IX. Review of adequacy of any other previous, product process or equipment corrective actions:</h3>
+      {/* IX. Corrective Actions */}
+      <h3 style={styles.sectionHeading}>
+        IX. Review of adequacy of any other previous, product process or equipment corrective actions:
+      </h3>
       <table style={styles.table}>
         <tbody>
-            <tr>
-                <td style={{...styles.td, ...styles.tdLabel}}>Summary of all the corrective actions from the previous product quality review reports, their implementation status and effectiveness.</td>
-                <td style={styles.tdDelimiter}>:</td>
-                <td style={styles.tdData}>{data.previousActionsSummary}</td>
-            </tr>
+          {renderTableRow(
+            "Summary of all the corrective actions from the previous product quality review reports, their implementation status and effectiveness.",
+            info.previousActionsSummary
+          )}
         </tbody>
       </table>
-      
-      {/* --- X. REVIEW OF POST-MARKETING COMMITMENTS FOR NEW MARKETING AUTHORIZATIONS --- */}
-      <h3 style={styles.sectionHeading}>X. Review of Post-Marketing commitments for new marketing authorizations:</h3>
+
+      {/* X. Post-Marketing Commitments */}
+      <h3 style={styles.sectionHeading}>
+        X. Review of Post-Marketing commitments for new marketing authorizations:
+      </h3>
       <table style={styles.table}>
-        <tbody>
-            {renderTableRow('Type of commitment', data.commitmentType)}
-        </tbody>
+        <tbody>{renderTableRow("Type of commitment", info.commitmentType)}</tbody>
       </table>
     </div>
   );

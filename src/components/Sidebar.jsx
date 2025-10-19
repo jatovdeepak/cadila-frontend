@@ -180,7 +180,7 @@ const Sidebar = () => {
         </ListItem>
 
         {/* Table Link */}
-        <ListItem disablePadding sx={{ display: "block" }}>
+        {/* <ListItem disablePadding sx={{ display: "block" }}>
           <ListItemButton
             component={Link}
             to="/pqr"
@@ -208,7 +208,7 @@ const Sidebar = () => {
               sx={{ opacity: open ? 1 : 0, transition: "opacity 0.3s" }}
             />
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
 
       </List>
     </Drawer>

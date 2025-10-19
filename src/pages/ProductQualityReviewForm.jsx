@@ -34,7 +34,7 @@ const ProductQualityReviewForm = ({ data = {} }) => {
       date: merged["APPROVED BY DATE"] || "",
     },
     header: {
-      company: merged["COMPANY"] || "",
+      company: merged["COMPANY NAME"] || "",
       documentname: merged["DOCUMENT NAME"] || "",
       annexure: merged["ANNEXURE"] || "ANNEXURE - 1 (Ref. SOP No. DQA 011)",
       page: merged["PAGE"] || "Page: 1 of 7",
