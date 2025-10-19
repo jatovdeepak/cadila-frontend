@@ -11,7 +11,7 @@ const ProductQualityReviewForm = ({ data = {} }) => {
     productName: merged["PRODUCT NAME"] || "",
     strength: merged["STRENGTH"] || "",
     productCode: merged["PRODUCT CODE"] || "",
-    mfgLocation: merged["MFG LOCATION"] || "",
+    mfgLocation: merged["MANUFACTURING LOCATION"] || "",
     market: merged["MARKET"] || "",
     pqrNumber: merged["PQR NUMBER"] || "",
     reviewPeriod: merged["REVIEW PERIOD"] || "",

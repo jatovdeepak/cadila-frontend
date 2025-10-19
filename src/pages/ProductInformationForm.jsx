@@ -15,7 +15,7 @@ const ProductInformationForm = ({ data = {} }) => {
 
     // General Information
     genericName: merged["GENERIC NAME"] || "",
-    description: merged["DESCRIPTION OF PRODUCT"] || "",
+    description: merged["DESCRIPTION"] || "",
     labelClaim: merged["LABEL CLAIM"] || "",
     standardBatchSize: merged["STANDARD BATCH SIZE"] || "N/A",
     shelfLife: merged["SHELF LIFE"] || "",
