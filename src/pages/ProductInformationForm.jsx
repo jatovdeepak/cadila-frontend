@@ -24,10 +24,10 @@ const ProductInformationForm = ({ data = {} }) => {
     licenceNo: merged["LICENCE NO"] || "",
     packingDetail1: merged["PACKING DETAIL 1"] || "",
     packingDetail2: merged["PACKING DETAIL 2"] || "",
-    noOfBatches: merged["NO OF BATCHES"] || "",
+    noOfBatches: merged["NO. OF BATCHES MANUFACTURED"] || "",
     batchNos: merged["BATCH NOS"] || "",
     noOfNonStandardBatches: merged["NO OF NON STANDARD BATCHES"] || "",
-    noOfBatchesReleased: merged["NO OF BATCHES RELEASED"] || "",
+    noOfBatchesReleased: merged["NO. OF BATCHES RELEASED"] || "",
     batchesRejected: merged["BATCHES REJECTED"] || "",
 
     // Header/Footer Info

@@ -195,7 +195,7 @@ const ProductQualityReviewForm = ({ data = {} }) => {
               PREPARED BY
             </td>
             <td style={{ ...styles.tdApproval, ...styles.detailCol }}>
-              {safe.preparedBy.designation}
+              Technical Supervisor QA
             </td>
             <td style={{ ...styles.tdApproval, ...styles.detailCol }}>
               {safe.preparedBy.name}
@@ -213,12 +213,13 @@ const ProductQualityReviewForm = ({ data = {} }) => {
               {safe.preparedBy.date}
             </td>
           </tr>
+
           <tr>
             <td style={{ ...styles.tdApproval, ...styles.labelCol }}>
               REVIEWED BY
             </td>
             <td style={{ ...styles.tdApproval, ...styles.detailCol }}>
-              {safe.reviewedBy.designation}
+              Technical Supervisor QA
             </td>
             <td style={{ ...styles.tdApproval, ...styles.detailCol }}>
               {safe.reviewedBy.name}
@@ -236,12 +237,13 @@ const ProductQualityReviewForm = ({ data = {} }) => {
               {safe.reviewedBy.date}
             </td>
           </tr>
+
           <tr>
             <td style={{ ...styles.tdApproval, ...styles.labelCol }}>
               APPROVED BY
             </td>
             <td style={{ ...styles.tdApproval, ...styles.detailCol }}>
-              {safe.approvedBy.designation}
+              Sr. Manager QA
             </td>
             <td style={{ ...styles.tdApproval, ...styles.detailCol }}>
               {safe.approvedBy.name}
@@ -260,6 +262,7 @@ const ProductQualityReviewForm = ({ data = {} }) => {
             </td>
           </tr>
         </tbody>
+
       </table>
     </div>
   );
