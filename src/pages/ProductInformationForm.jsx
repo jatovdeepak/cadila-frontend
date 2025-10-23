@@ -22,8 +22,8 @@ const ProductInformationForm = ({ data = {} }) => {
     storageCondition: merged["STORAGE CONDITION"] || "",
     mfgLocation: merged["MANUFACTURING LOCATION"] || "",
     licenceNo: merged["LICENCE NO"] || "",
-    packingDetail1: merged["PACKING DETAIL 1"] || "",
-    packingDetail2: merged["PACKING DETAIL 2"] || "",
+    packingDetail: merged["PACK"] || "",
+    // packingDetail2: merged["PACK"] || "",
     noOfBatches: merged["NO. OF BATCHES MANUFACTURED"] || "",
     batchNos: merged["BATCH NOS"] || "",
     noOfNonStandardBatches: merged["NO OF NON STANDARD BATCHES"] || "",
@@ -199,7 +199,7 @@ const ProductInformationForm = ({ data = {} }) => {
           {renderTableRow("Licence No.", safe.licenceNo)}
           {renderTableRow(
             "Packing Detail",
-            `${safe.packingDetail1}  ${safe.packingDetail2}`
+            `${safe.packingDetail}`
           )}
           {renderTableRow(
             "No. of batches manufactured",
